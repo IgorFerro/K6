@@ -21,15 +21,14 @@ export default function(){
    
    let response = http.get('https://run.mocky.io/v3/13ae1113-8d41-48cd-a65f-3fb0f257048b')
    console.log(`response body length ${response.body.length} for VU= ${__VU} ITERA = ${__ITER}`)
-  const check1 = check(response, {
+   const check1 = check(response, {
        'is response status is 200 :' : (r) => r.status === 200,
      
    })
-   errorRate.add(!check1); // !i.e not 200, body lenght not matched aso add noto operator
+   errorRate.add(check1); // !i.e not 200, body lenght not matched aso add noto operator
 
    const check2 = check(response, {
-    
-    'body size is 43 bytes :' : (r) => r.body.length == 43,
+   'body size is 43 bytes :' : (r) => r.body.length == 43,
   })
-  errorRate.add(!check2); // !i.e not 200, body lenght not matched aso add noto operator
+  errorRate.add(check2); // !i.e not 200, body lenght not matched aso add noto operator
   }
