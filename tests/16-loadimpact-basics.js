@@ -14,6 +14,8 @@ Basics loadimpact script
  //Tags
  Usefull to filter checks,Api calls, thresholds
 
+ //Treshoulds on Tags - pass/fail complete load test based upon Tags
+
 */
 
 import http from 'k6/http';
@@ -38,8 +40,9 @@ export let options = {
         'groupDuration{groupName:groupGetUsers}':['avg < 200'],
         'groupDuration{groupName:groupGetGroups}':['avg< 300'],
 
-        //Trend to measure group timing
-
+        //Add Tags - Theshoulds
+        'http_req_duration{type:GETAPITAG}' : ['p(95)<100'], // duration must be less than 100 miliseconds 95% of time
+        'http_req_duration{type:GETGROUPSTAG}' : ['p(95)<100']
     },
 
     ext: {
@@ -70,7 +73,9 @@ export let options = {
     export default function () {
 
         groupWithMetrics("groupGetUsers", function  (){ 
-        const responseGetUsers = http.get('https://run.mocky.io/v3/d3cfd6eb-5088-43eb-b27a-0e690d870402');
+        const responseGetUsers = http.get('https://run.mocky.io/v3/d3cfd6eb-5088-43eb-b27a-0e690d870402', {
+            tags:{'type' : 'GETAPITAG'}
+        });
         const checkGetUsers = check(responseGetUsers, {
             "is response os API1 is 200 : " : r => r.status ===200,
             //ADD Tag
@@ -87,7 +92,9 @@ export let options = {
 
         //API- 2
         groupWithMetrics("groupGetGroups", function(){
-            const responseGetGroups = http.get('https://run.mocky.io/v3/bb4ac454-8307-46e2-9281-598c9c754121');
+            const responseGetGroups = http.get('https://run.mocky.io/v3/bb4ac454-8307-46e2-9281-598c9c754121', {
+                tags: {'type': 'GETGROUPSTAG'}
+            });
             const checkGetGroups= check(responseGetGroups, {
                 "is response of Get Groups is 200 : " : r => r.status ===200,
                 tags: {
