@@ -11,15 +11,21 @@ Basics loadimpact script
  //Threashold on groups
  Defines pass/fail criteria for group
 
+ //Tags
+ Usefull to filter checks,Api calls, thresholds
+
 */
 
 import http from 'k6/http';
 import {check,group} from 'k6'
 import {Rate,Trend} from 'k6/metrics'
 
+//Declare trend
+let groupDuration = Trend("groupDuration")
+let getUserApiTrend = Trend("getUserApiTrend")
+let getGroupTrend = Trend("getGroupApiTrend")
 
 //Declare Variables
-let groupDuration = Trend("groupDuration")
 export let errorRate = new Rate('errors')
 
 //Define Options
@@ -66,20 +72,33 @@ export let options = {
         groupWithMetrics("groupGetUsers", function  (){ 
         const responseGetUsers = http.get('https://run.mocky.io/v3/d3cfd6eb-5088-43eb-b27a-0e690d870402');
         const checkGetUsers = check(responseGetUsers, {
-            "is response os API1 is 200 : " : r => r.status ===200
+            "is response os API1 is 200 : " : r => r.status ===200,
+            //ADD Tag
+            tags: {
+                type: "GETAPITAG"
+            }
         })
         //Define error rate
         errorRate.add(!checkGetUsers)
-       })
+
+        //Add Trend 
+        getUserApiTrend.add(responseGetUsers.timings.duration,{type: "GETAPITAG"})
+        })
 
         //API- 2
         groupWithMetrics("groupGetGroups", function(){
             const responseGetGroups = http.get('https://run.mocky.io/v3/bb4ac454-8307-46e2-9281-598c9c754121');
             const checkGetGroups= check(responseGetGroups, {
-                "is response of Get Groups is 200 : " : r => r.status ===200
+                "is response of Get Groups is 200 : " : r => r.status ===200,
+                tags: {
+                    type: "GETGROUPSTAG" // type is customized name, iy can be anything
+                }
             })
         //Define error rate
         errorRate.add(!checkGetGroups)
+        //Add Trend
+        getGroupTrend.add(responseGetGroups.timings.duration,{type:"GETGROUPSTAG"})
+       
        })
     }
 
