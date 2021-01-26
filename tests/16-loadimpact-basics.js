@@ -14,7 +14,11 @@ Basics loadimpact script
  //Tags
  Usefull to filter checks,Api calls, thresholds
 
- //Treshoulds on Tags - pass/fail complete load test based upon Tags
+ //Treshoulds on Tags 
+  pass/fail complete load test based upon Tags
+
+//Distribute Traffic
+VUs will call the API or microservice form various regions
 
 */
 
@@ -33,7 +37,7 @@ export let errorRate = new Rate('errors')
 //Define Options
 export let options = {
     vus: 10,
-    duration: '2s',
+    duration: '60s',
     thresholds: {
         errors:['rate<0.1'], //10% errors
 
@@ -42,14 +46,31 @@ export let options = {
 
         //Add Tags - Theshoulds
         'http_req_duration{type:GETAPITAG}' : ['p(95)<100'], // duration must be less than 100 miliseconds 95% of time
-        'http_req_duration{type:GETGROUPSTAG}' : ['p(95)<100']
+        'http_req_duration{type:GETGROUPSTAG}' : ['p(95)<100'],
+
+        //Threshoulds for regions
+        "http_req_duration{load_zone:amazon:us:ashburn}" : ["p(95)<500"],
+        "http_req_duration{load_zone:amazon:us:dublin}" : ["p(95)<200"],
+        "http_req_duration{load_zone:amazon:us:mumbai}" : ["p(95)<100"],
+        "http_req_duration{load_zone:amazon:us:tokyo}" : ["p(95)<300"],
+        "http_req_duration{load_zone:amazon:us:singapore}" : ["p(95)<400"],
     },
 
     ext: {
         loadimpact: {
           projectID: 3523104,
           // Test runs with the same name groups test runs together
-          name: "Trainning"
+          name: "Trainning",
+
+          //Add VUs distribution
+          distribution:{
+            ashburnDistribution: {loadZone: 'amazon:us:ashburn', percent: 10},
+            dublinDistribution: {loadZone: 'amazon:ie:dublin', percent: 10},
+            mumbaiDistribution: {loadZone: 'amazon:in:mumbai', percent: 10},
+            tokyoDistribution: {loadZone: 'amazon:jp:tokyo', percent: 50},
+            singaporeDistribution: {loadZone: 'amazon:sg:singapore', percent: 20} // this syntax 'amazon:sg:singapore' its specified by loadimpact
+
+          }
         }
       }
     }
