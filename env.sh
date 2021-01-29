@@ -1,6 +1,6 @@
 export ADMIN="admin",
 export ADMIN_PASSWORD = "ADMIN"
-export VU = 5
+export VUS = 5
 export DURATION="10s"
 export INT_TOKEN=""
 export DEV_TOKEN=""
