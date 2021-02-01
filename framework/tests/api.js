@@ -7,3 +7,17 @@ export let options = {
     duration: testData.DURATION,
     teardownTimeout: "20s"
 }
+
+//INIT
+let environment
+let token
+
+//Environment
+if(`${__ENV.ENVIRONMENT}` == env.int){
+    environment= env.intEnvironment
+    token = `${__ENV.INT_TOKEN}`
+}
+else if(`${__ENV.ENVIRONMENT}` == env.dev){
+    environment = env.devEnvironment;
+    token = `${__ENV.DEV_TOKEN}`
+}
