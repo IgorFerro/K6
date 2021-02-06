@@ -79,7 +79,7 @@ export function createApi(endpoint, token) {
     export function getApi(enpoint,word){
         const getResponse = http.get(`${route_getAPi(endpoint)}`, null)
         //Add check
-        checkGetResponse = check(getResponse, {
+       var checkGetResponse = check(getResponse, {
             "Get Course status is 200 " : r=> r.status ===200
         })
         //Add error Rate
@@ -101,7 +101,7 @@ export function createApi(endpoint, token) {
             console.log(` Get body ${JSON.stringify(getResponseBody)}`)  
             console.log(` Id is ${getResponseBody[0].id}`)  
         } catch (ex) {
-            checkGetResponse = check(getResponse,{
+         var   checkGetResponse = check(getResponse,{
                 "Get Api does not return valid data ": r.status === 999
             })
             failureRate.add(!checkGetResponse)
@@ -117,7 +117,7 @@ export function createApi(endpoint, token) {
         // Define Response
         let deleteResponse = http.del(`${route_deleteApi(endpoint,token,word)}`, null ,setHeader())
         //Define check
-        checkDeleteResponse = check(deleteResponse,{
+       var checkDeleteResponse = check(deleteResponse,{
             "Delete Course status 200 : " r => r.status === 2000
         })
         //Define error rate
