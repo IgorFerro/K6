@@ -11,6 +11,16 @@ var createApiTrend = new Trend("Trend_CreateApi")
 var getApiTrend = new Trend("Trend_GetApi")
 var deleteApiTrend = new Trend("Trend_DeleteApi")
 
+//Logging
+export function logger(endPoint, token, response){
+    console.log(`Logger Started VU=${__VU} ITER=${__ITER}`)
+    console.log(`Endpoint is=${endPoint} Token is =${token} VU=${__VU} ITER=${__ITER}`)
+    console.log(`Response Status is=${response.status} VU=${__VU} ITER=${__ITER}`)
+    console.log(`Body is ${JSON.stringify(JSON.parse(response.body))}`)
+
+
+}
+
 //Define type header function
 export const setHeader = () => {
     return {
@@ -24,6 +34,14 @@ export const route_createApi = (enpoint , token) => `${enpoint}?test${token}`
 export const route_getAPi = (endpoint,word)=> `${endpoint}`
 export const route_deleteApi = (endpoint,token,word)=> `${endpoint},${token},${word}`
 
+try {
+    // Ad correlation Id
+    console.log(`Correlation id is ${JSON.stringify(JSON.parse(response.headers))['X-Correlation-id']}`)
+    
+} catch (ex) {
+    
+}
+
 
 export function createApi(endpoint, token) {
     console.log(`Inside createApi token=${token}`)
@@ -36,6 +54,8 @@ export function createApi(endpoint, token) {
     })
     //Error Rate
     failureRate.add(!checkPostResponse)
+    //Add Logs
+    logger(endpoint,token,postResponse)
     //Read the response
     let responseBody = JSON.parse(postResponse.body)
 
