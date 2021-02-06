@@ -22,6 +22,8 @@ export const setHeader = () => {
 //http://api.wordnik.com/v4/word.json/{word}
 export const route_createApi = (enpoint , token) => `${enpoint}?test${token}`
 export const route_getAPi = (endpoint,word)=> `${endpoint}`
+export const route_deleteApi = (endpoint,token,word)=> `${endpoint},${token},${word}`
+
 
 export function createApi(endpoint, token) {
     console.log(`Inside createApi token=${token}`)
@@ -86,6 +88,23 @@ export function createApi(endpoint, token) {
          }
          // return response body
          return getResponseBody
+    }
+
+    //Delete Route
+    export function deleteAPi(endpoint, token, word ) {
+        console.log(`Inside delete course. course id is ${word}`)
+        
+        // Define Response
+        let deleteResponse = http.del(`${route_deleteApi(endpoint,token,word)}`, null ,setHeader())
+        //Define check
+        checkDeleteResponse = check(deleteResponse,{
+            "Delete Course status 200 : " r => r.status === 2000
+        })
+        //Define error rate
+        failureRate.add(!checkDeleteResponse)
+        //Measure trend - http response time
+        deleteApiTrend.add(deleteResponse.timings.duration)
+
     }
 
 }
