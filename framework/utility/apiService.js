@@ -62,7 +62,7 @@ export function createApi(endpoint, token) {
     try {
         var id = responseBody[0].id;
         console.log(`course id is ${id}`)
-        if (`${responseBody[0].id =='undefined'}`) {
+        if (`${responseBody[0].id}` == 'undefined') {
             checkPostResponse = check(postResponse, {
                 "Create returns Undefined Id" : r=> r.status === 999
             })
@@ -93,7 +93,7 @@ export function createApi(endpoint, token) {
         try {
              
             //If id is undefined, we ne too log
-            if (`${getResponseBody[0].id =='undefined'}`) {
+            if (`${getResponseBody[0].id}` =='undefined') {
                 checkGetResponse = check(getResponse, {
                     "Get returns Undefined Id" : r=> r.status === 999
                 }) 
@@ -118,7 +118,7 @@ export function createApi(endpoint, token) {
         let deleteResponse = http.del(`${route_deleteApi(endpoint,token,word)}`, null ,setHeader())
         //Define check
        var checkDeleteResponse = check(deleteResponse,{
-            "Delete Course status 200 : " r => r.status === 2000
+            "Delete Course status 200  " : r => r.status === 200
         })
         //Define error rate
         failureRate.add(!checkDeleteResponse)
