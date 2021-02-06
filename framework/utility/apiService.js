@@ -19,8 +19,9 @@ export const setHeader = () => {
         }
     }
 }
-
+//http://api.wordnik.com/v4/word.json/{word}
 export const route_createApi = (enpoint , token) => `${enpoint}?test${token}`
+export const route_getAPi = (endpoint,word)=> `${endpoint}`
 
 export function createApi(endpoint, token) {
     console.log(`Inside createApi token=${token}`)
@@ -39,6 +40,12 @@ export function createApi(endpoint, token) {
     try {
         var id = responseBody[0].id;
         console.log(`course id is ${id}`)
+        if (`${responseBody[0].id =='undefined'}`) {
+            checkPostResponse = check(postResponse, {
+                "Create returns Undefined Id" : r=> r.status === 999
+            })
+            failureRate.add(!checkPostResponse)
+        }
     } catch (ex) {
         checkPostResponse = check(postResponse,{
             "Create Api does not return valid data ": r.status === 999
@@ -46,5 +53,39 @@ export function createApi(endpoint, token) {
         failureRate.add(!checkPostResponse)
     }
 
+    //Get Api
+    export function getApi(enpoint,word){
+        const getResponse = http.get(`${route_getAPi(endpoint)}`, null)
+        //Add check
+        checkGetResponse = check(getResponse, {
+            "Get Course status is 200 " : r=> r.status ===200
+        })
+        //Add error Rate
+        failureRate.add(!checkGetResponse)
+        //Add Trend
+        getApiTrend.add(getApiTrend.timings.duration)
+        //Read the body
+        let getResponseBody = JSON.parse(getResponseBody)
+        //Log Id
+        // Add a check case not found
+        try {
+             
+            //If id is undefined, we ne too log
+            if (`${getResponseBody[0].id =='undefined'}`) {
+                checkGetResponse = check(getResponse, {
+                    "Get returns Undefined Id" : r=> r.status === 999
+                }) 
+            }
+            console.log(` Get body ${JSON.stringify(getResponseBody)}`)  
+            console.log(` Id is ${getResponseBody[0].id}`)  
+        } catch (ex) {
+            checkGetResponse = check(getResponse,{
+                "Get Api does not return valid data ": r.status === 999
+            })
+            failureRate.add(!checkGetResponse)
+         }
+         // return response body
+         return getResponseBody
+    }
 
 }
