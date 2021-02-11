@@ -1,0 +1,16 @@
+# define pipeline
+stages:
+ - test
+
+k6-test
+ stage: test
+ image:
+   name: loadimpact/k6
+   entrypoint: [""]
+  only
+   - master
+  script:
+   - k6 run tests/02-script.js --vus 5 --duration 5s
+  cache: {}
+  tags:
+     - git-org-docker
